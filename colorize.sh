@@ -1,68 +1,91 @@
 #!/bin/bash
 
-export color_hex="$1"
+##
+## made for candy-icons (https://github.com/EliverLara/candy-icons)
+##
 
-hex_to_rgb() {
-    hex=$1
-    r=$(printf "%d" 0x"${hex:0:2}")
-    g=$(printf "%d" 0x"${hex:2:2}")
-    b=$(printf "%d" 0x"${hex:4:2}")
-    echo "$r,$g,$b"
+display_usage() {
+	echo "Usage: $0 <iconset-path> <hex-color>"
 }
 
-export to_rgb=`hex_to_rgb ${color_hex}`
-export color_rgb=${to_rgb}
-export name="system-candy-${color_hex}"
+# Check for help option
+if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+	display_usage
+	exit 0
+fi
 
-cp . ../system-candy.orig -a
+# Check for correct number of arguments
+if [ $# -ne 2 ]; then
+	echo "Error: must input an icon set path and a color"
+	display_usage
+	exit 1
+fi
 
-mkdir "${name}"
-mkdir "${name}"/apps/scalable -p
-mkdir "${name}"/categories/scalable -p
-mkdir "${name}"/devices/scalable -p
-mkdir "${name}"/emblems/{8,16,22,symbolic} -p
-mkdir "${name}"/mimetypes/scalable -p
-mkdir "${name}"/places/{16,32,48} -p
-mkdir "${name}"/preferences/scalable -p
+# Remove trailing slash from iconset path if present
+iconset="$1"
+iconset=${iconset%%/}
 
-for icon in "$(ls *.svg)
-do
-	cat ${icon} | sed -e "s/rgb([^)]*/rgb(${color_rgb}/g" | sed -e "s/#......\"/#${color_hex}\"/g" | sed -e "s/#......;/#${color_hex};/g" > "${name}"/${icon}
-	sync
+# Function to convert hex color to RGB
+hex_to_rgb() {
+	hex="$1"
+	r=$(printf "%d" 0x"${hex:0:2}")
+	g=$(printf "%d" 0x"${hex:2:2}")
+	b=$(printf "%d" 0x"${hex:4:2}")
+	echo "$r,$g,$b"
+}
+
+# Validate and convert color input
+color_hex="$2"
+color_rgb=$(hex_to_rgb "${color_hex}")
+name="system-${iconset}-${color_hex}"  # Extract iconset directory name
+
+echo "Converting icon set '$iconset' to color '$color_rgb'"
+
+# Create working directory
+mkdir -p "${name}.work"
+
+# List of paths to process
+paths=("apps/scalable"
+	"categories/scalable"
+	"devices/scalable"
+	"emblems/8"
+	"emblems/16"
+	"emblems/22"
+	"emblems/symbolic"
+	"places/16"
+	"places/32"
+	"places/48"
+	"mimetypes/scalable"
+	"preferences/scalable"
+	"status/scalable")
+
+	# Copy and modify SVG files
+	cp "/usr/share/candy-icons/apps/scalable/start-here-system.svg" "${name}.work/"
+
+for path in "${paths[@]}"; do
+	mkdir -p "${name}/${path}"  # Create destination directory
+
+	# Copy SVG files from iconset directory to working directory
+	cp "${iconset}/${path}/"*.svg "${name}.work/"
+
+	# Process each copied SVG file in working directory
+	for icon in "${name}.work"/*.svg; do
+		# Replace color definitions in SVG files
+		sed -i -E "s/rgb\(([[:space:]]*[0-9]+[[:space:]]*,?[[:space:]]*[0-9]+[[:space:]]*,?[[:space:]]*[0-9]+[[:space:]]*)\)/${color_rgb}/g" "$icon"
+		sed -i -E "s/#[0-9a-fA-F]{6}/${color_hex}/g" "$icon"
+		sed -i -E "s/url\([^)]*\)/rgb(${color_rgb})/g" "$icon"
+
+		# Move modified SVG files to final destination
+		mv "$icon" "${name}/${path}/" -v
+	done
 done
 
-for app in $(ls ../candy-icons/apps/scalable)
-do
-	mv ""${name}""/${app} "${name}"/apps/scalable
-done
+# Clean up working directory
+rm -r "${name}.work"
 
-for device in $(ls ../candy-icons/devices/scalable)
-do
-	mv "${name}"/${device} "${name}"/devices/scalable
-done
+# Add index.theme
+cp "${iconset}/index.theme" "${name}/index.theme"
+sed -i -E "/^Name=/s/.*/Name=System\ Candy\ $2/" "${name}/index.theme"
+sed -i -E "/^Comment=/s/.*/Comment=System\ Candy\ $2/" "${name}/index.theme"
 
-for emblem in $(ls emblem*)
-do
-	cp "${name}"/${emblem} "${name}"/emblems/8
-	cp "${name}"/${emblem} "${name}"/emblems/16
-	cp "${name}"/${emblem} "${name}"/emblems/22
-	mv "${name}"/${emblem} "${name}"/emblems/symbolic
-done
-
-for mimetype in $(ls ../candy-icons/mimetypes/scalable)
-do
-	mv "${name}"/${mimetype} "${name}"/mimetypes/scalable
-done
-
-for place in $(ls ../candy-icons/places/16 ../candy-icons/places/48)
-do
-	cp "${name}"/${place} "${name}"/places/16
-	cp "${name}"/${place} "${name}"/places/32
-	mv "${name}"/${place} "${name}"/places/48
-done
-
-for pref in $(ls ../candy-icons/preferences/scalable)
-do
-	mv "${name}"/${pref} "${name}"/preferences/scalable
-done
-
+echo "Conversion complete. Output directory: $name"
