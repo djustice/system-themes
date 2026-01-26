@@ -1,0 +1,46 @@
+[Description]
+Skin=System FFFFFF
+Author=Drake Justice Based on FlatGhost theme.
+Email=djustice.kde@gmail.com
+Edited=1.14.26
+Icon=/icon.png
+
+[Border]
+red=255
+green=255
+blue=255
+width=0
+
+[Text]
+x=26
+y=14
+red=255
+green=255
+blue=255
+text=Terminal Emulator
+
+[Background]
+back_image=/title/back.png
+left_corner=/title/left.png
+right_corner=/title/right.png
+
+[ConfigButton]
+x=76
+y=4
+up_image=/title/config_up.png
+over_image=/title/config_over.png
+down_image=/title/config_down.png
+
+[FocusButton]
+x=52
+y=4
+up_image=/title/focus_up.png
+over_image=/title/focus_over.png
+down_image=/title/focus_down.png
+
+[QuitButton]
+x=28
+y=4
+up_image=/title/quit_up.png
+over_image=/title/quit_over.png
+down_image=/title/quit_down.png
