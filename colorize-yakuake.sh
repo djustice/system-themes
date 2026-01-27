@@ -35,12 +35,12 @@ R=$((16#$R_HEX))
 G=$((16#$G_HEX))
 B=$((16#$B_HEX))
 
-cat tabs.skin | sed -e "s/Skin=System.*/Skin=System $color/" > ../system-yakuake-${color_hex}/title/tabs.skin
+cat tabs.skin | sed -e "s/Skin=System.*/Skin=System $color_hex/" > ../system-yakuake-${color_hex}/title/tabs.skin
 cat tabs.skin | sed -e "s/Edited=.*/Edited=$(date +%D)/" > ../system-yakuake-${color_hex}/title/tabs.skin
 cat tabs.skin | sed -e "s/red=.*/red=$R/" > ../system-yakuake-${color_hex}/title/tabs.skin
 cat tabs.skin | sed -e "s/green=.*/green=$G/" > ../system-yakuake-${color_hex}/title/tabs.skin
 cat tabs.skin | sed -e "s/blue=.*/blue=$B/" > ../system-yakuake-${color_hex}/title/tabs.skin
-cat title.skin | sed -e "s/Skin=System.*/Skin=System $color/" > ../system-yakuake-${color_hex}/title/tabs.skin
+cat title.skin | sed -e "s/Skin=System.*/Skin=System $color_hex/" > ../system-yakuake-${color_hex}/title/tabs.skin
 cat title.skin | sed -e "s/Edited.*/Edited=$(date +%D)/" > ../system-yakuake-${color_hex}/title/tabs.skin
 cat title.skin | sed -e "s/red=.*/red=$R/" > ../system-yakuake-${color_hex}/title/tabs.skin
 cat title.skin | sed -e "s/green=.*/green=$G/" > ../system-yakuake-${color_hex}/title/tabs.skin
