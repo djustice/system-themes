@@ -26,27 +26,22 @@ for png in $(cat title.skin | grep png | cut -d= -f2); do
   fi
 done
 
-## TODO: adjust .skin files
+R_HEX=${color_hex:0:2}
+G_HEX=${color_hex:2:2}
+B_HEX=${color_hex:4:2}
 
-# color=$1
-# color=${color#\#}
-# R_HEX=${color:0:2}
-# G_HEX=${color:2:2}
-# B_HEX=${color:4:2}
-#
-# # Convert hex to decimal (0-255)
-# R=$((16#$R_HEX))
-# G=$((16#$G_HEX))
-# B=$((16#$B_HEX))
+# Convert hex to decimal (0-255)
+R=$((16#$R_HEX))
+G=$((16#$G_HEX))
+B=$((16#$B_HEX))
 
-# sed -i tabs.skin -e "s/Skin=System.*/Skin=System $color/"
-# sed -i tabs.skin -e "s/Edited=.*/Edited=$(date +%D)/"
-# sed -i tabs.skin -e "s/red=.*/red=$R/"
-# sed -i tabs.skin -e "s/green=.*/green=$G/"
-# sed -i tabs.skin -e "s/blue=.*/blue=$B/"
-# sed -i title.skin -e "s/Skin=System.*/Skin=System $color/"
-# sed -i title.skin -e "s/Edited.*/Edited=$(date +%D)/"
-# sed -i title.skin -e "s/red=.*/red=$R/"
-# sed -i title.skin -e "s/green=.*/green=$G/"
-# sed -i title.skin -e "s/blue=.*/blue=$B/"
-
+cat tabs.skin | sed -e "s/Skin=System.*/Skin=System $color/" > ../system-yakuake-${color_hex}/title/tabs.skin
+cat tabs.skin | sed -e "s/Edited=.*/Edited=$(date +%D)/" > ../system-yakuake-${color_hex}/title/tabs.skin
+cat tabs.skin | sed -e "s/red=.*/red=$R/" > ../system-yakuake-${color_hex}/title/tabs.skin
+cat tabs.skin | sed -e "s/green=.*/green=$G/" > ../system-yakuake-${color_hex}/title/tabs.skin
+cat tabs.skin | sed -e "s/blue=.*/blue=$B/" > ../system-yakuake-${color_hex}/title/tabs.skin
+cat title.skin | sed -e "s/Skin=System.*/Skin=System $color/" > ../system-yakuake-${color_hex}/title/tabs.skin
+cat title.skin | sed -e "s/Edited.*/Edited=$(date +%D)/" > ../system-yakuake-${color_hex}/title/tabs.skin
+cat title.skin | sed -e "s/red=.*/red=$R/" > ../system-yakuake-${color_hex}/title/tabs.skin
+cat title.skin | sed -e "s/green=.*/green=$G/" > ../system-yakuake-${color_hex}/title/tabs.skin
+cat title.skin | sed -e "s/blue=.*/blue=$B/" > ../system-yakuake-${color_hex}/title/tabs.skin
